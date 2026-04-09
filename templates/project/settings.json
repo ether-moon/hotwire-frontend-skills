@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": []
+  },
+  "extraKnownMarketplaces": {
+    "{{MARKETPLACE_NAME}}": {
+      "source": {
+        "source": "github",
+        "repo": "{{GITHUB_OWNER}}/{{MARKETPLACE_NAME}}"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "{{PLUGIN_NAME}}@{{MARKETPLACE_NAME}}": true
+  }
+}
