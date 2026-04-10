@@ -38,7 +38,11 @@ cmd_status() {
   fi
 
   local skill_count
-  skill_count=$(find "$PLUGIN_ROOT/skills" -name "SKILL.md" 2>/dev/null | wc -l | tr -d ' ')
+  if [ -d "$PLUGIN_ROOT/skills" ]; then
+    skill_count=$(find "$PLUGIN_ROOT/skills" -name "SKILL.md" | wc -l | tr -d ' ')
+  else
+    skill_count=0
+  fi
   echo "Skills:      ${skill_count} found"
 
   if [ -f "$PLUGIN_ROOT/hooks/hooks.json" ]; then

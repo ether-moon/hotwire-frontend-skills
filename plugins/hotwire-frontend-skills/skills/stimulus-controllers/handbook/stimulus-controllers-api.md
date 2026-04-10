@@ -106,7 +106,7 @@ class SpinnerButton extends Controller {
   static afterLoad(identifier, application) {
     const { controllerAttribute } = application.schema
     const update = () => {
-      document.querySelector(".legacy-spinner-button")?.forEach((el) => {
+      document.querySelectorAll(".legacy-spinner-button")?.forEach((el) => {
         el.setAttribute(controllerAttribute, identifier)
       })
     }

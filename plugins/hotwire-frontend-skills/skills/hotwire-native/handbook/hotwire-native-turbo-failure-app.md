@@ -88,7 +88,8 @@ The `hotwire_native_form` param tells TurboFailureApp to use redirect behavior (
 
 ```ruby
 class Users::SessionsController < Devise::SessionsController
-  skip_before_action :verify_authenticity_token, only: [:new, :create]
+  # CSRF is kept enabled — native clients send X-CSRF-Token header from meta tag.
+  # Only skip for JSON API auth if you use a separate token-based auth flow.
   respond_to :html, :json
 
   def create

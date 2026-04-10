@@ -113,7 +113,7 @@ for skill in "${HANDBOOK_SKILLS[@]}"; do
 done
 
 # ── CLI script ───────────────────────────────────────────────────────
-CLI=$(find "$ROOT/plugins" -path "*/scripts/*" -type f -perm +111 2>/dev/null | head -1)
+CLI=$(find "$ROOT/plugins" -path "*/scripts/*" -type f 2>/dev/null | while read -r f; do [ -x "$f" ] && echo "$f" && break; done)
 if [ -n "$CLI" ]; then
   if "$CLI" version >/dev/null 2>&1; then
     pass "CLI script responds to 'version' command"
