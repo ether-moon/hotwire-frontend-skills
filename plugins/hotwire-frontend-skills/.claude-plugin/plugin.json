@@ -5,5 +5,11 @@
   "author": {
     "name": "ether-moon"
   },
-  "mcpServers": "../.mcp.json"
+  "mcpServers": {
+    "context7": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    }
+  }
 }
