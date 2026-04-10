@@ -1,7 +1,6 @@
 .DS_Store
-.idea/
 *.swp
 *.swo
 *~
 tmp/
-.claude/settings.local.json
+node_modules/

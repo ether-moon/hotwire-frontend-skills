@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": []
+  },
+  "extraKnownMarketplaces": {
+    "hotwire-frontend-skills": {
+      "source": {
+        "source": "github",
+        "repo": "ether-moon/hotwire-frontend-skills"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "hotwire-frontend-skills@hotwire-frontend-skills": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "hotwire-frontend-skills",
+  "description": "7 skills (1 gateway + 6 specialists) for building Rails frontend with Hotwire — Turbo Drive, Turbo Frames, Turbo Streams, Stimulus, view transitions, forms, media, and native bridge.",
+  "version": "1.0.0",
+  "author": {
+    "name": "ether-moon"
+  },
+  "mcpServers": "../.mcp.json"
+}
