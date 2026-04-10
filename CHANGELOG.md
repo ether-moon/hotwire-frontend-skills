@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.0.1] - 2026-04-10
+
+### Fixed
+
+- **plugin manifest**: Inline mcpServers config to fix installation validation error
+
 ## [1.0.0] - 2026-04-09
 
 ### Added
