@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# hotwire-frontend-skills CLI
+# Accessible from skills and hooks via:
+#   ${CLAUDE_PLUGIN_ROOT}/scripts/hotwire-frontend-skills <command> [args]
+
+VERSION="1.0.0"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PLUGIN_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# ── Commands ─────────────────────────────────────────────────────────
+
+cmd_help() {
+  cat <<EOF
+hotwire-frontend-skills v${VERSION}
+
+Usage: hotwire-frontend-skills <command> [args]
+
+Commands:
+  version     Print version
+  status      Check plugin installation status
+  help        Show this help message
+EOF
+}
+
+cmd_version() {
+  echo "$VERSION"
+}
+
+cmd_status() {
+  echo "Plugin root: ${PLUGIN_ROOT}"
+
+  if [ -f "$PLUGIN_ROOT/.claude-plugin/plugin.json" ]; then
+    echo "Manifest:    OK"
+  else
+    echo "Manifest:    MISSING" >&2
+  fi
+
+  local skill_count
+  if [ -d "$PLUGIN_ROOT/skills" ]; then
+    skill_count=$(find "$PLUGIN_ROOT/skills" -name "SKILL.md" | wc -l | tr -d ' ')
+  else
+    skill_count=0
+  fi
+  echo "Skills:      ${skill_count} found"
+
+  if [ -f "$PLUGIN_ROOT/hooks/hooks.json" ]; then
+    echo "Hooks:       OK"
+  else
+    echo "Hooks:       MISSING" >&2
+  fi
+}
+
+# ── Dispatch ─────────────────────────────────────────────────────────
+
+COMMAND="${1:-help}"
+shift || true
+
+case "$COMMAND" in
+  help|--help|-h)  cmd_help ;;
+  version|--version|-v)  cmd_version ;;
+  status)  cmd_status ;;
+  *)
+    echo "Unknown command: $COMMAND" >&2
+    echo "Run 'hotwire-frontend-skills help' for usage." >&2
+    exit 1
+    ;;
+esac

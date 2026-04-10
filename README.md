@@ -1,177 +1,93 @@
-# Claude Code Plugin Template
+# Hotwire Frontend Skills
 
-A project scaffold generator for Claude Code plugins and marketplaces.
+A Claude Code plugin that teaches Claude how to build Rails frontends with Hotwire. 7 skills — 1 gateway that triages requests and 6 specialists covering Turbo, Stimulus, forms, media, and native bridge — each backed by curated reference articles, official handbook chapters, and troubleshooting cookbooks.
 
-## Quick Start
+## Skills
 
-```bash
-git clone <this-repo> cc-plugin-template
-cd cc-plugin-template
-bash init.sh
-```
-
-The script will ask for:
-
-| Prompt | Example | Used for |
+| Skill | Domain | Knowledge |
 |---|---|---|
-| Marketplace name | `my-tools` | Top-level directory, marketplace.json, settings.json |
-| Plugin name | `my-plugin` | Plugin directory, plugin.json, CLI script, skill prefix |
-| Plugin description | `A helpful plugin` | marketplace.json, plugin.json |
-| Author name | `your-name` | plugin.json, LICENSE |
-| GitHub owner | `your-github` | settings.json (marketplace source) |
+| `frontend-craft` | Gateway — triage, routing, common principles | SKILL.md only |
+| `turbo-navigation-rendering` | Drive, Frames, rendering lifecycle, view transitions | 7 refs, 7 handbook, 4 examples |
+| `turbo-streams` | Streams, broadcasting, morphing, optimistic state | 8 refs, 2 handbook, 1 example |
+| `stimulus-controllers` | Controller design, lifecycle, DOM, browser APIs | 9 refs, 11 handbook, 1 example |
+| `hotwire-forms` | Form submission, validation, autosave, submit UX | 7 refs, 3 examples |
+| `media-content` | Media playback, gallery, preview, rich content | 7 refs |
+| `hotwire-native` | Native bridge, web/native boundary | 7 refs, 4 handbook, 1 example |
 
-## What Gets Generated
+## How It Works
+
+Ask Claude anything about Hotwire frontend development. The `frontend-craft` gateway skill classifies the problem, applies cross-cutting principles, and routes to the right specialist. Each specialist follows a 5-step workflow with GOOD/BAD code guardrails, loading only the references it needs.
 
 ```
-my-tools/
-├── .claude-plugin/
-│   └── marketplace.json          # Marketplace manifest
-├── plugins/
-│   └── my-plugin/
-│       ├── .claude-plugin/
-│       │   └── plugin.json       # Plugin metadata (name, version, author)
-│       ├── skills/
-│       │   └── hello/
-│       │       └── SKILL.md      # Example skill (replace with your own)
-│       ├── hooks/
-│       │   ├── hooks.json        # Hook registrations
-│       │   └── on-prompt.sh      # Example UserPromptSubmit hook
-│       ├── scripts/
-│       │   └── my-plugin         # CLI tool (bash)
-│       └── schema/               # Asset files (SQL, configs, etc.)
-├── tests/
-│   └── all.sh                    # Validates plugin structure
-├── .github/workflows/
-│   └── ci.yml                    # Runs tests on push/PR
-├── .claude/settings.json         # Self-registers marketplace for dogfooding
-├── CLAUDE.md                     # Agent directives
-├── CHANGELOG.md
-├── LICENSE (MIT)
-└── .gitignore
+User request
+  → frontend-craft (classify, apply principles)
+    → specialist skill (references + handbook + examples)
+      → code with guardrails
 ```
 
-## Adding a Skill
+## Install
 
-Create a directory under `plugins/<name>/skills/` with a `SKILL.md`:
-
-```bash
-mkdir plugins/my-plugin/skills/greet
-```
-
-```markdown
----
-name: greet
-description: "Greets the user by name"
-argument-hint: "[name]"
----
-
-# greet
-
-## When This Skill Runs
-Invoke via `/my-plugin:greet Alice`.
-
-## Allowed Tools
-`Bash` (read-only).
-
-## Execution Steps
-1. Parse the name argument (default: "World")
-2. Print "Hello, {name}!"
-
-## Constraints
-- MUST NOT modify files.
-```
-
-### Skill Frontmatter Fields
-
-| Field | Required | Description |
-|---|---|---|
-| `name` | Yes | Kebab-case identifier. Used as `/plugin:name` |
-| `description` | Yes | One-line description. Shown in skill lists |
-| `argument-hint` | No | Syntax hint (e.g. `[file-path]`) |
-| `user-invocable` | No | Default `true`. Set `false` for internal-only skills |
-
-## Adding a Hook
-
-Edit `plugins/<name>/hooks/hooks.json` to register new hooks:
+Add to your `.claude/settings.json`:
 
 ```json
 {
-  "hooks": {
-    "UserPromptSubmit": [...],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/my-hook.sh"
-          }
-        ]
-      }
-    ]
+  "permissions": {
+    "allow": []
+  },
+  "extraKnownMarketplaces": {
+    "hotwire-frontend-skills": {
+      "source": { "source": "github", "repo": "ether-moon/hotwire-frontend-skills" }
+    }
+  },
+  "enabledPlugins": {
+    "hotwire-frontend-skills@hotwire-frontend-skills": true
   }
 }
 ```
 
-Available hook points: `UserPromptSubmit`, `PreToolUse`, `PostToolUse`.
+## Plugin Structure
 
-Hook scripts emit JSON to inject context:
-
-```json
-{ "additionalContext": "Your message here" }
+```
+plugins/hotwire-frontend-skills/
+├── .claude-plugin/
+│   └── plugin.json           # Plugin metadata (name, version, author)
+├── skills/
+│   ├── frontend-craft/       # Gateway skill
+│   │   └── SKILL.md
+│   ├── turbo-navigation-rendering/
+│   │   ├── SKILL.md
+│   │   ├── references/       # Pattern articles with GOOD/BAD examples
+│   │   ├── handbook/         # Official Turbo documentation chapters
+│   │   └── examples/         # Cookbooks and troubleshooting guides
+│   ├── turbo-streams/
+│   ├── stimulus-controllers/
+│   ├── hotwire-forms/
+│   ├── media-content/
+│   └── hotwire-native/
+├── hooks/
+│   ├── hooks.json
+│   └── on-prompt.sh
+├── scripts/
+└── schema/
 ```
 
-## Adding a CLI Command
+### Knowledge Layers
 
-Add subcommands to `plugins/<name>/scripts/<plugin-name>`:
+Each specialist skill draws from up to three knowledge layers:
 
-```bash
-cmd_my_command() {
-  echo "Running my command with args: $*"
-}
-
-# Add to the case dispatch:
-case "$COMMAND" in
-  my-command)  cmd_my_command "$@" ;;
-  ...
-esac
-```
-
-Reference from skills via `${CLAUDE_PLUGIN_ROOT}/scripts/<plugin-name> my-command`.
+- **references/** — Curated pattern articles with concrete GOOD/BAD code examples
+- **handbook/** — Official documentation chapters (Turbo, Stimulus, Hotwire Native)
+- **examples/** — Cookbooks and troubleshooting guides for common scenarios
 
 ## Testing
 
 ```bash
-cd my-tools
 bash tests/all.sh
 ```
 
-Tests validate: JSON syntax, plugin.json fields, skill frontmatter, CLI responsiveness.
+Validates JSON syntax, plugin.json fields, skill frontmatter, and structural integrity.
 
-## Publishing
-
-1. Push to GitHub
-2. Users install via `.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "my-tools": {
-      "source": { "source": "github", "repo": "your-github/my-tools" }
-    }
-  },
-  "enabledPlugins": {
-    "my-plugin@my-tools": true
-  }
-}
-```
-
-## Variables Available in Hooks & Skills
-
-| Variable | Description |
-|---|---|
-| `${CLAUDE_PLUGIN_ROOT}` | Absolute path to the installed plugin directory |
-| `${CLAUDE_PLUGIN_DATA}` | Persistent data directory (survives plugin updates) |
+CI runs automatically on push and PR to `main`.
 
 ## License
 
