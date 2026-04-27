@@ -51,3 +51,12 @@ Body structure:
 ```bash
 bash tests/all.sh
 ```
+
+## Versioning
+
+The `bumping-version` skill (in `skill-set`) reads this section.
+
+- **Base branch**: main
+- **Commit message**: chore: bump version to {version}
+- **Extra version files**: (none — `plugins/hotwire-frontend-skills/.claude-plugin/plugin.json` is auto-detected)
+- **Changelog categories**: Added, Improved, Fixed
